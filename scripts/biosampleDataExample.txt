@@ -1,0 +1,10 @@
+1: Stool sample from Human
+
+Identifiers: BioSample: SA
+N13879804; Sample name: 5176-HP-0523SC0636; SRA: SRS6013795
+
+Organism: human gut metagenome
+
+Attributes:
+
+    /isolate="5176-HP-0523SC0636"
