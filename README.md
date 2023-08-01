@@ -1,10 +1,10 @@
 # Workflow: Process 16S rRNA reads with mothur
 
 ## Purpose
-This repository provides instructions and a workflow for processing 16S rRNA sequences from 507 individuals, including Parkinson's Disease (PD) subjects and control subjects using Mothur[1]. The data source for this project is the Parkinson's Disease Bioproject available on NCBI BioProject (ID: 601994). The study associated with the data is titled "Characterizing dysbiosis of gut microbiome in PD: evidence for overabundance of opportunistic pathogens" [2].
+This repository provides instructions and a workflow in Workflow Description Language for processing 16S rRNA sequences using Mothur[1]. An example dataset of 16S rRNA reads from 507 individuals was used to develop this workflow, including Parkinson's Disease (PD) subjects and control subjects. The data source for this project is the Parkinson's Disease Bioproject available on NCBI BioProject (ID: 601994). The study associated with the data is titled "Characterizing dysbiosis of gut microbiome in PD: evidence for overabundance of opportunistic pathogens" [2].
 
-## Metadata
-While sample metadata is not explicitly required for this workflow, metadata and the associated raw data and scripts used to generate metadata can be found in the scripts subdirectory in .csv format. Two raw metadata example files were obtained directly from NCBI (`SraRunInfoExample.csv` and `biosampleDataExample.txt`) and were manipulated using two scripts (`connecting_metadata.sh` and `PD_metadata_join.R`) to generate `PD_metadata.csv`. This .csv file was used for subsequent statistical analyses and data visualization. 
+## Example metadata
+While sample metadata is not explicitly required for this workflow, metadata and the associated raw data and scripts used to generate PD-related metadata from the example dataset can be found in the [examples](examples/) subdirectory in .csv format. Two raw metadata example files were obtained directly from NCBI (`SraRunInfoExample.csv` and `biosampleDataExample.txt`) and were manipulated using two scripts (`connecting_metadata.sh` and `PD_metadata_join.R`) to generate `PD_metadata.csv`. This .csv file was used for subsequent statistical analyses and data visualization. 
 
 ## Workflow inputs
 | Type | Input | Description |
