@@ -4,7 +4,7 @@
 This repository provides instructions and a workflow for processing 16S rRNA sequences from 507 individuals, including Parkinson's Disease (PD) patients and control samples using mothur[1]. The data source for this project is the Parkinson's Disease Bioproject available on NCBI BioProject (ID: 601994). The study associated with the data is titled "Characterizing dysbiosis of gut microbiome in PD: evidence for overabundance of opportunistic pathogens" [2].
 
 ## Metadata
-While sample data metadata is not explicitly required for this workflow, metadata can be found here (gs://jesse_dev/PD_metadata) across 3 files. Two files are obtained directly from NCBI and were manipulated using scripts found in the scripts subdirectory to generate the PD_reads_metadata.csv file. This .csv file was used for subsequent statistical analyses and data visualization. Examples of the two metadata files from NCBI are also present in the scripts subdirectory within this repository.
+While sample data metadata is not explicitly required for this workflow, metadata can be found in the scripts subdirectory in .csv format. Two raw metadata files were obtained directly from NCBI (`SraRunInfoExample.csv` and `biosampleDataExample.txt`) and were manipulated using two scripts found in the scripts subdirectory (`connecting_metadata.sh` and `PD_metadata_join.R`) to generate the PD_metadata.csv file. This .csv file was used for subsequent statistical analyses and data visualization. Examples of the two metadata files from NCBI are also present in the scripts subdirectory within this repository.
 
 ## Workflow inputs
 | Type | Input | Description |
