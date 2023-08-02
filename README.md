@@ -23,9 +23,7 @@ A template input file containing only required inputs can be found [here](input_
 | File | `fastq_tar` | Compressed tarball of multiple paired-end fastq files. |
 | File | `silva_ref_fasta` | Full length sequence database from [SILVA](https://www.arb-silva.de/). |
 | File | `silva_ref_tax` | Full length reference taxonomy database from [SILVA](https://www.arb-silva.de/). |
-| File | `oligos` | The oligos file provides barcodes and primers to Mothur. This file must have the following format for paired-end reads |
-primer forwardPrimerString reversePrimerString optionalPrimerName
-barcode barcodeString sampleName
+| File | `oligos` | The oligos file provides barcodes and primers to Mothur. This file must have the following format for paired-end reads (formatting options for forward and reverse primers can be found [here](https://mothur.org/wiki/oligos_file/)): <br> primer forwardPrimerString reversePrimerString optionalPrimerName <br> barcode barcodeString sampleName |
 | String | `file_type` | Input file type. ('fastq', 'gz') |
 | String | `prefix` | Prefix used for naming output files; this can be any string that the users wishes to appear prior to the rest of the file name(s). |
 | Int | `ref_fasta_start` | Start position to trim reference fasta from in pcr.seqs command. This value depends on the region of the 16S rRNA gene that was sequenced. Instructions on how to customize the reference alignment based on the region sequenced can be found [here](https://mothur.org/blog/2016/Customization-for-your-region/) |
