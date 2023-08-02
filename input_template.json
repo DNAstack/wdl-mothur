@@ -1,6 +1,5 @@
 {
   "mothur.test_fastq_tar": "File",
-  "mothur.container_registry": "String",
   "mothur.silva_ref_fasta": "File",
   "mothur.silva_ref_tax": "File",
   "mothur.oligos": "File",
