@@ -23,11 +23,13 @@ A template input file containing only required inputs can be found [here](input_
 | File | `fastq_tar` | Compressed tarball of multiple paired-end fastq files. |
 | File | `silva_ref_fasta` | Full length sequence database from [SILVA](https://www.arb-silva.de/). |
 | File | `silva_ref_tax` | Full length reference taxonomy database from [SILVA](https://www.arb-silva.de/). |
-| File | `oligos` | The oligos file provides barcodes and primers to Mothur. |
+| File | `oligos` | The oligos file provides barcodes and primers to Mothur. This file must have the following format for paired-end reads |
+primer forwardPrimerString reversePrimerString optionalPrimerName
+barcode barcodeString sampleName
 | String | `file_type` | Input file type. ('fastq', 'gz') |
-| String | `prefix` | Prefix used for naming output files. |
-| Int | `ref_fasta_start` | Start position to trim reference fasta from in pcr.seqs command. |
-| Int | `ref_fasta_end` | End position to trim reference fasta from in pcr.seqs command. |
+| String | `prefix` | Prefix used for naming output files; this can be any string that the users wishes to appear prior to the rest of the file name(s). |
+| Int | `ref_fasta_start` | Start position to trim reference fasta from in pcr.seqs command. This value depends on the region of the 16S rRNA gene that was sequenced. Instructions on how to customize the reference alignment based on the region sequenced can be found [here](https://mothur.org/blog/2016/Customization-for-your-region/) |
+| Int | `ref_fasta_end` | End position to trim reference fasta from in pcr.seqs command. This value depends on the region of the 16S rRNA gene that was sequenced. Instructions on how to customize the reference alignment based on the region sequenced can be found [here](https://mothur.org/blog/2016/Customization-for-your-region/) |
 
 ### Optional inputs
 
@@ -71,7 +73,7 @@ The values defined here have defaults set that may be overridden by the user.
 | Int | `classify_seqs_iters` | Number of iterations to perform when calculating the bootstrap confidence score for the taxonomy in classify.seqs command. [100] |
 | Int | `tax_level` | Integer parameter representing the level of taxonomic classification to classify up to; a value of -1 will print the max level within the .taxonomy file. [-1] |
 | String | `taxon_remove` | Taxa to remove from sequence data in remove.lineage command. ['Chloroplast-Mitochondria-unknown-Archaea-Eukaryota'] |
-| Int | `classify_cutoff` | Consensus confidence threshold for taxonomy output ['51'] |
+| Int | `classify_cutoff` | Consensus confidence threshold for taxonomy output. ['51'] |
 String | `asv_classify_basis` | The basis parameter indicates what the summary file should represent in classify.otus command. ('sequence', 'otu') ['sequence'] |
 | Int | `classify_printlevel` | Taxlevel of the *tax.summary file to print to in classify.otus command. The options are 1 to the max level in the final .taxonomy file; a value of -1 will print the max level within the .taxonomy file. [-1] |
 | Boolean | `classify_probabilities` | Parameter that shuts off the outputting of the consensus confidence results in classify.otus command. If true, the confidence will be shown. [true] |
@@ -80,7 +82,7 @@ String | `asv_classify_basis` | The basis parameter indicates what the summary f
 | Float | `cluster_cutoff` | Similarity threshold used for clustering sequences in cluster command. [0.03] |
 | String | `cluster_metric` | Metric in the opticluster method in cluster command. ('mcc', 'sens', 'spec', 'tptn', 'fpfn', 'tp', 'tn', 'fp', 'fn', 'f1score', 'accuracy', 'ppv', 'npv', 'fdr') ['mcc'] |
 | String | `cluster_initialize` | Initial randomization for the opticluster method in cluster command. ('singleton', 'oneotu') ['singleton'] |
-| Float | `cluster_delta` | Stable value for the metric in the opticluster method in cluster command [0.0001] |
+| Float | `cluster_delta` | Stable value for the metric in the opticluster method in cluster command. [0.0001] |
 | Int | `cluster_iters` | Maxiters for the opticluster method in cluster command. [100] |
 | String | `otu_cluster_method` | Method for clustering sequences based on similarity in cluster command. ('opti', 'average', 'furthest', 'nearest', 'agc' 'dgc', 'unique') ['opti'] |
 | String | `otu_classify_basis` | The basis parameter indicates what the summary file should represent in classify.otus command. ('sequence', 'otu') ['otu'] |
