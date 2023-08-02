@@ -71,6 +71,8 @@ The values defined here have defaults set that may be overridden by the user.
 | Int | `classify_seqs_iters` | Number of iterations to perform when calculating the bootstrap confidence score for the taxonomy in classify.seqs command. [100] |
 | Int | `tax_level` | Integer parameter representing the level of taxonomic classification to classify up to; a value of -1 will print the max level within the .taxonomy file. [-1] |
 | String | `taxon_remove` | Taxa to remove from sequence data in remove.lineage command. ['Chloroplast-Mitochondria-unknown-Archaea-Eukaryota'] |
+| Int | `classify_cutoff` | Consensus confidence threshold for taxonomy output ['51'] |
+String | `asv_classify_basis` | The basis parameter indicates what the summary file should represent in classify.otus command. ('sequence', 'otu') ['sequence'] |
 | Int | `classify_printlevel` | Taxlevel of the *tax.summary file to print to in classify.otus command. The options are 1 to the max level in the final .taxonomy file; a value of -1 will print the max level within the .taxonomy file. [-1] |
 | Boolean | `classify_probabilities` | Parameter that shuts off the outputting of the consensus confidence results in classify.otus command. If true, the confidence will be shown. [true] |
 | Boolean | `classify_persample` | Parameter that indicates the assignment of a consensus taxonomy for each group in classify.otus command. [false] |
