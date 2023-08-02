@@ -15,7 +15,7 @@ To download raw fastq files, fasterq-dump v2.10.7 was used along with the `acces
 To tar the fastq files, the command below was used.
 ```tar -cf example.tar --no-xattrs *.fastq```
 
-The paramters ref_fasta_start and ref_fasta_end were set to 11894 and 25319 respectively as per the [Mothur SOP](https://mothur.org/wiki/miseq_sop/) as the data used in this case study was sequenced at the V4 region of the 16S rRNA gene. Instructions for customizing the start and end position of the reference alignment if a region other than the V4 region was used are located [here](https://mothur.org/blog/2016/Customization-for-your-region/).
+The parameters `ref_fasta_start` and `ref_fasta_end` were set to 11894 and 25319 respectively as per the [Mothur SOP](https://mothur.org/wiki/miseq_sop/) as the data used in this case study was sequenced at the V4 region of the 16S rRNA gene. Instructions for customizing the start and end position of the reference alignment if a region other than the V4 region was sequenced are located [here](https://mothur.org/blog/2016/Customization-for-your-region/).
 
 ## Running the workflow
-All default values from the workflow were accepted as they currently exist in the [Mothur workflow](../../mothur.wdl)
+All default values from the workflow were accepted as they currently exist in the [Mothur workflow](../../mothur.wdl).
