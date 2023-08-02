@@ -1,6 +1,6 @@
 # Load in dplyr and read in output file from connecting_metadata.sh
 library(dplyr)
-bio <- read.table('connecting_metadata_output.txt', sep = "\t",  header=TRUE)
+bio <- read.table('connecting_metadata_example_output.txt', sep = "\t",  header=TRUE)
 
 # Use gsub to clean up output file from connecting_metadata.sh
 bio$host_age <- gsub("\\D+", "", bio$host_age)
@@ -11,7 +11,7 @@ bio$sequencing_pool <- gsub ("    /sequencing_pool=", "", bio$sequencing_pool)
 bio$SRA<- gsub (".*SRA: ", "", bio$SRA)
 
 # Read in csv containing SRA run info
-sra<- read.csv('SraRunInfo.csv')
+sra<- read.csv('SraRunInfoExample.csv')
 
 # Rename sample to SRA to facilitate left_join
 sra <- sra %>%
@@ -23,8 +23,8 @@ bio_sra<- left_join(bio, sra, by = 'SRA')%>%
   dplyr::filter (dataset == 'dataset_2')
 
 # Write joined data frame to csv
-write.csv(bio_sra, 'PD_metadata.csv', row.names = FALSE)
+write.csv(bio_sra, 'PD_metadata_example.csv', row.names = FALSE)
 
 # Create and and write single column data frame of SRR identifiers to a text file for usage with fasterq-dump
 accession_list <- as.data.frame(bio_sra$Run)
-write.table(accession_list, 'accession_list.txt', col.names = FALSE, row.names=FALSE)
+write.table(accession_list, 'accession_list_example.txt', col.names = FALSE, row.names=FALSE)
