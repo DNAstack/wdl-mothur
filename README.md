@@ -22,7 +22,7 @@ A template input file containing only required inputs can be found [here](input_
 | :- | :- | :- |
 | File | `fastq_tar` | Compressed tarball of multiple paired-end fastq files. |
 | File | `silva_ref_fasta` | Full length sequence database from [SILVA](https://www.arb-silva.de/). |
-| File | `silva_ref_tax` | Full length reference taxonomy database from [SILVA](https://www.arb-silva.de/). <br> The silva_ref_fasta and silva_ref_tax files were downloaded using the following command:<br> `wget https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.nr_v138_1.tgz && tar -xzf silva.nr_v138_1.tgz && rm silva.nr_v138_1.tgz`. The resulting .align and .tax files were not manipulated prior to being used in this workflow. |
+| File | `silva_ref_tax` | Full length reference taxonomy database from [SILVA](https://www.arb-silva.de/). <br> The silva_ref_fasta and silva_ref_tax files were downloaded using the following command:<br> `wget https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.nr_v138_1.tgz && tar -xzf silva.nr_v138_1.tgz && rm silva.nr_v138_1.tgz`. <br>The resulting .align and .tax files were not manipulated prior to being used in this workflow. |
 | File | `oligos` | The oligos file provides barcodes and primers to Mothur. This file must have the following format for paired-end reads (formatting options for forward and reverse primers can be found [here](https://mothur.org/wiki/oligos_file/)): <br> <br> primer forwardPrimerString reversePrimerString optionalPrimerName <br> <br> barcode barcodeString sampleName |
 | String | `file_type` | Input file type. ('fastq', 'gz') |
 | String | `prefix` | Prefix used for naming output files; this can be any string that the users wishes to appear prior to the rest of the file name(s). |
