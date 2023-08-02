@@ -1,4 +1,4 @@
-# Workflow: Process 16S rRNA reads with Mothur
+# Workflow: Process 16S rRNA reads with Mothur in Workflow Description Language
 
 ## Purpose
 This repository provides instructions and a workflow in Workflow Description Language for processing 16S rRNA sequences using Mothur[1]. An example dataset of 16S rRNA reads from 507 individuals was used to develop this workflow, including Parkinson's Disease (PD) subjects and control subjects. The data source for this project is the Parkinson's Disease Bioproject available on NCBI BioProject (ID: 601994). The study associated with the data is titled "Characterizing dysbiosis of gut microbiome in PD: evidence for overabundance of opportunistic pathogens" [2].
