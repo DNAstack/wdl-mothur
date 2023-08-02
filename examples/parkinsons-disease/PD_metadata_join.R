@@ -11,7 +11,7 @@ bio$sequencing_pool <- gsub ("    /sequencing_pool=", "", bio$sequencing_pool)
 bio$SRA<- gsub (".*SRA: ", "", bio$SRA)
 
 # Read in csv containing SRA run info
-sra<- read.csv('SraRunInfo.csv')
+sra<- read.csv('SraRunInfoExample.csv')
 
 # Rename sample to SRA to facilitate left_join
 sra <- sra %>%
@@ -23,4 +23,4 @@ bio_sra<- left_join(bio, sra, by = 'SRA')%>%
   filter (dataset == 'dataset_2')
 
 # Write joined data frame to csv
-write.csv(bio_sra, 'PD_metadata.csv', row.names = FALSE)
+write.csv(bio_sra, 'metadata_example.csv', row.names = FALSE)
