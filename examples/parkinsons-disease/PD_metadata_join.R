@@ -1,6 +1,6 @@
 # Load in dplyr and read in output file from connecting_metadata.sh
 library(dplyr)
-bio <- read.table('connecting_metadata_example_output.txt', sep = "\t",  header=TRUE)
+bio <- read.table('connecting_metadata_output.txt', sep = "\t",  header=TRUE)
 
 # Use gsub to clean up output file from connecting_metadata.sh
 bio$host_age <- gsub("\\D+", "", bio$host_age)
@@ -11,13 +11,13 @@ bio$sequencing_pool <- gsub ("    /sequencing_pool=", "", bio$sequencing_pool)
 bio$SRA<- gsub (".*SRA: ", "", bio$SRA)
 
 # Read in csv containing SRA run info
-sra<- read.csv('SraRunInfoExample.csv')
+sra<- read.csv('SraRunInfo.csv')
 
 # Rename sample to SRA to facilitate left_join
 sra <- sra %>%
   rename (SRA = Sample)
 
-# Join sra and bio data frames and filter out dataset_1 samples that were not used in this example 
+# Join sra and bio data frames and filter out dataset_1 samples that were not used in this case study 
 bio_sra<- left_join(bio, sra, by = 'SRA')%>%
   select (SRA, host_age, host_sex, health_status, dataset, sequencing_pool, Run, spots, bases, spots_with_mates, avgLength, size_MB, Experiment, LibraryName, BioSample, SampleName)%>%
   dplyr::filter (dataset == 'dataset_2')
