@@ -23,8 +23,8 @@ bio_sra<- left_join(bio, sra, by = 'SRA')%>%
   dplyr::filter (dataset == 'dataset_2')
 
 # Write joined data frame to csv
-write.csv(bio_sra, 'PD_metadata_example.csv', row.names = FALSE)
+write.csv(bio_sra, 'PD_metadata.csv', row.names = FALSE)
 
 # Create and and write single column data frame of SRR identifiers to a text file for usage with fasterq-dump
 accession_list <- as.data.frame(bio_sra$Run)
-write.table(accession_list, 'accession_list_example.txt', col.names = FALSE, row.names=FALSE)
+write.table(accession_list, 'accession_list.txt', col.names = FALSE, row.names=FALSE)
