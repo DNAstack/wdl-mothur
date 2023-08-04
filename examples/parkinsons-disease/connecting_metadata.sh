@@ -4,13 +4,13 @@
 grep -E 'host sex|host age|dataset|health state|SRA:' biosample_result.txt > output_grep.txt
 
 # Manipulate file so every 6 rows go into columns - paste - - - - - -: The paste command combines lines from input files horizontally, separating them by a delimiter (default is a tab). In this case, we use six hyphens ("-") to represent six input fields.
-paste - - - - - - < output_grep.txt > output_cols.txt
+paste - - - - - - < output_grep.txt > output_cols.tsv
 
 # Manually create a file with column names
-echo -e "SRA\t host_age\t host_sex\t health_status\t dataset\t sequencing_pool" > header.txt
+echo -e "SRA\t host_age\t host_sex\t health_status\t dataset\t sequencing_pool" > header.tsv
 
 # Combine our header and output file to create a text file that can be imported into PD_metadata_join.R for further manipulation
-cat header.txt output_cols.txt > connecting_metadata_output.txt
+cat header.tsv output_cols.tsv > connecting_metadata_output.tsv
 
 # Remove intermediate files
-rm header.txt output_cols.txt output_grep.txt
+rm header.tsv output_cols.tsv output_grep.txt

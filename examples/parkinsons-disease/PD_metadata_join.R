@@ -1,6 +1,6 @@
 # Load in dplyr and read in output file from connecting_metadata.sh
 library(dplyr)
-bio <- read.table('connecting_metadata_output.txt', sep = "\t",  header=TRUE)
+bio <- read.table('connecting_metadata_output.tsv', sep = "\t",  header=TRUE)
 
 # Use gsub to clean up output file from connecting_metadata.sh
 bio$host_age <- gsub("\\D+", "", bio$host_age)

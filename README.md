@@ -23,10 +23,10 @@ A template input file containing only required inputs can be found [here](input_
 | File | `fastq_tar` | Compressed tarball of multiple paired-end fastq files. |
 | File | `silva_ref_fasta` | Full length sequence database from [SILVA](https://www.arb-silva.de/). |
 | File | `silva_ref_tax` | Full length reference taxonomy database from [SILVA](https://www.arb-silva.de/). <br> The silva_ref_fasta and silva_ref_tax files were downloaded using the following command:<br> `wget https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.nr_v138_1.tgz && tar -xzf silva.nr_v138_1.tgz && rm silva.nr_v138_1.tgz`. <br>The resulting .align and .tax files were not manipulated prior to being used in this workflow. |
-| File | `oligos` | The oligos file provides barcodes and primers to Mothur. See Mothur's [documentation](https://mothur.org/wiki/oligos_file/) for information on formatting this file. 
+| File | `oligos` | The oligos file provides barcodes and primers to Mothur. See Mothur's [documentation](https://mothur.org/wiki/oligos_file/) for information on formatting this file. |
 | String | `prefix` | Prefix used for naming output files; this can be any string that the users wishes to appear prior to the rest of the file name(s). |
 | Int | `ref_fasta_start` | Start position to trim reference fasta from in pcr.seqs command. This value depends on the region of the 16S rRNA gene that was sequenced. For example, if the V4 region was sequenced, the start position can be set to 11895, whereas if the V3 region was sequenced, the start position can be set to 6388. Note, this assumes primers are included in your sequences. Instructions on how to customize the reference alignment if a region other than the V3/V4 region was sequenced can be found [here](https://mothur.org/blog/2016/Customization-for-your-region/) |
-| Int | `ref_fasta_end` | End position to trim reference fasta from in pcr.seqs command. This value depends on the region of the 16S rRNA gene that was sequenced. For example, if the V4 region was sequenced, the start position can be set to 25318, whereas if the V3 region was sequenced, the start position can be set to 13861. Note, this assumes primers are included in your sequences. Instructions on how to customize the reference alignment if a region other than the V3/V4 region was sequenced can be found [here](https://mothur.org/blog/2016/Customization-for-your-region/) ||
+| Int | `ref_fasta_end` | End position to trim reference fasta from in pcr.seqs command. This value depends on the region of the 16S rRNA gene that was sequenced. For example, if the V4 region was sequenced, the start position can be set to 25318, whereas if the V3 region was sequenced, the start position can be set to 13861. Note, this assumes primers are included in your sequences. Instructions on how to customize the reference alignment if a region other than the V3/V4 region was sequenced can be found [here](https://mothur.org/blog/2016/Customization-for-your-region/) |
 
 ### Optional inputs
 
@@ -70,7 +70,7 @@ The values defined here have defaults set that may be overridden by the user.
 | Int | `classify_seqs_iters` | Number of iterations to perform when calculating the bootstrap confidence score for the taxonomy in classify.seqs command. [100] |
 | Int | `tax_level` | Integer parameter representing the level of taxonomic classification to classify up to; a value of -1 will print the max level within the .taxonomy file. [-1] |
 | String | `taxon_remove` | Taxa to remove from sequence data in remove.lineage command. ['Chloroplast-Mitochondria-unknown-Archaea-Eukaryota'] |
-| Int | `classify_cutoff` | Consensus confidence threshold for taxonomy output. ['51'] |
+| Int | `classify_cutoff` | Consensus confidence threshold for taxonomy output. [51] |
 String | `asv_classify_basis` | The basis parameter indicates what the summary file should represent in classify.otus command. ('sequence', 'otu') ['sequence'] |
 | Int | `classify_printlevel` | Taxlevel of the *tax.summary file to print to in classify.otus command. The options are 1 to the max level in the final .taxonomy file; a value of -1 will print the max level within the .taxonomy file. [-1] |
 | Boolean | `classify_probabilities` | Parameter that shuts off the outputting of the consensus confidence results in classify.otus command. If true, the confidence will be shown. [true] |
@@ -87,7 +87,7 @@ String | `asv_classify_basis` | The basis parameter indicates what the summary f
 | String | `dist_calc` | Distance calculation method in dist.seqs command. ('onegap', 'nogaps', 'eachgap') ['onegap'] |
 | Boolean | `count_ends` | Parameter to penalize gaps that occur at end of sequences in dist.seqs command. [false] |
 | Int | `processors` | Number of processors to use in various tasks. [32] |
-| String | `container_registry` | Registry that hosts workflow containers ["dnastack"] |
+| String | `container_registry` | Registry that hosts workflow containers ['dnastack'] |
 
 ## Workflow outputs
 
