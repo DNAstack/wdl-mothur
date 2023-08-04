@@ -3,7 +3,6 @@
   "mothur.silva_ref_fasta": "File",
   "mothur.silva_ref_tax": "File",
   "mothur.oligos": "File",
-  "mothur.file_type": "String",
   "mothur.prefix": "String",
   "mothur.ref_fasta_end": "Int",
   "mothur.ref_fasta_start": "Int"
