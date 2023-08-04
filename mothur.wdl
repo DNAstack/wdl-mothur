@@ -3,22 +3,13 @@ version 1.0
 workflow mothur {
     input {
         File test_fastq_tar
-        String container_registry
         File silva_ref_fasta
         File silva_ref_tax
         File oligos
-        String file_type
         String prefix
-        Int processors = 32
-        String align_method = "needleman"
-        Int match = 1 
-        Int mismatch = -1
-        Int gap_open = -2
-        Int gap_extend = -1
-        Int ksize = 8
 
         # make_contigs
-        Int max_ambig = 0 
+        Int max_ambig = 0
         Int max_homop = 8
         Int max_length = 300
         Int primer_differences = 4
@@ -29,25 +20,31 @@ workflow mothur {
         # pcr_seqs
         Int ref_fasta_start
         Int ref_fasta_end
-        Int sequence_differences = 2
-        Boolean keepdots = false 
+        Boolean keepdots = false
 
         # align_seqs_to_silva
+        String align_method = "needleman"
+        Int match = 1
+        Int mismatch = -1
+        Int gap_open = -2
+        Int gap_extend = -1
+        Int ksize = 8
         String search_method = "kmer"
         Boolean flip = true
         Float threshold = 0.5
 
         # filter_screened_aligned_seqs
-        String trump = "."
+        String trump_character = "."
         Boolean vertical = true
 
         # pre_cluster
+        Int sequence_differences = 2
         String precluster_method = "simple"
 
         # chimera_vsearch
+        Boolean remove_chimeras = true
+        Boolean dereplicate_chimeras = true
         Float minh_chimeras = 0.3
-        Boolean remove_chimeras = true 
-        Boolean dereplicate_chimeras = true 
         Float mindiv_chimeras = 0.5
         Int mindiffs_chimeras = 3
         Float xn_chimeras = 8.0
@@ -58,8 +55,8 @@ workflow mothur {
         String classify_output_format = "simple"
         Int classify_seqs_cutoff = 80
         Boolean bootstrap_probabilities = false
-        Boolean relative_abundance = false 
-        Int classify_seqs_iters = 100 
+        Boolean relative_abundance = false
+        Int classify_seqs_iters = 100
         Int tax_level = -1
 
         # remove_lineage
@@ -69,9 +66,9 @@ workflow mothur {
         Int classify_cutoff = 51
         String asv_classify_basis = "sequence"
         Int classify_printlevel = -1
-        Boolean classify_probabilities = true 
-        Boolean classify_persample = false 
-        Int classify_threshold = 90 
+        Boolean classify_probabilities = true
+        Boolean classify_persample = false
+        Int classify_threshold = 90
 
         # make_OTUs
         Float cluster_cutoff = 0.03
@@ -83,38 +80,39 @@ workflow mothur {
         String otu_classify_basis = "otu"
         Float dist_cutoff = 0.03
         String dist_calc = "onegap"
-        Boolean count_ends = false 
-    }
+        Boolean count_ends = false
 
-    String silva_ref_fasta_basename = basename(silva_ref_fasta, ".align")
+        # Runtime configuration
+        Int processors = 32
+        String container_registry = "dnastack"
+    }
 
     call make_contigs {
         input:
-            test_fastq_tar = test_fastq_tar,
             prefix = prefix,
-            file_type = file_type,
-            max_ambig = max_ambig,
-            max_length = max_length,
-            max_homop = max_homop,
-            container_registry = container_registry,
-            align_method = align_method,
-            primer_differences = primer_differences,
+            test_fastq_tar = test_fastq_tar,
             oligos = oligos,
-            quality_score_threshold = quality_score_threshold,
+            max_ambig = max_ambig,
+            max_homop = max_homop,
+            max_length = max_length,
+            primer_differences = primer_differences,
             check_orient = check_orient,
             sequencing_format = sequencing_format,
+            quality_score_threshold = quality_score_threshold,
+            align_method = align_method,
             match = match,
             mismatch = mismatch,
             gap_open = gap_open,
             gap_extend = gap_extend,
-            processors = processors
-    } 
+            processors = processors,
+            container_registry = container_registry
+    }
 
     call unique_seqs {
         input:
+            prefix = prefix,
             fasta = make_contigs.make_contigs_fasta,
             count_table = make_contigs.make_contigs_count_table,
-            prefix = prefix,
             container_registry = container_registry
     }
 
@@ -123,100 +121,95 @@ workflow mothur {
             silva_ref_fasta = silva_ref_fasta,
             ref_fasta_start = ref_fasta_start,
             ref_fasta_end = ref_fasta_end,
-            silva_ref_fasta_basename = silva_ref_fasta_basename,
-            container_registry = container_registry,
+            silva_ref_tax = silva_ref_tax,
             keepdots = keepdots,
             processors = processors,
-            silva_ref_tax = silva_ref_tax
-    } 
+            container_registry = container_registry
+    }
 
     call align_seqs_to_silva {
         input:
-            silva_v4_fasta = pcr_seqs.silva_v4_fasta,
-            unique_seqs_fasta = unique_seqs.unique_seqs_fasta,
             prefix = prefix,
-            container_registry = container_registry, 
+            unique_seqs_fasta = unique_seqs.unique_seqs_fasta,
+            silva_v4_fasta = pcr_seqs.silva_v4_fasta,
             align_method = align_method,
-            search_method = search_method, 
-            ksize = ksize,
             match = match,
             mismatch = mismatch,
             gap_open = gap_open,
             gap_extend = gap_extend,
+            ksize = ksize,
+            search_method = search_method,
             flip = flip,
             threshold = threshold,
-            processors = processors
+            processors = processors,
+            container_registry = container_registry
     }
 
     call screen_aligned_seqs {
         input:
-            aligned_unique_seqs_fasta = align_seqs_to_silva.aligned_unique_seqs_fasta,
             prefix = prefix,
+            aligned_unique_seqs_fasta = align_seqs_to_silva.aligned_unique_seqs_fasta,
             container_registry = container_registry
     }
 
     call filter_screened_aligned_seqs {
         input:
-            aligned_screened_unique_seqs_fasta = screen_aligned_seqs.aligned_screened_unique_seqs_fasta,
             prefix = prefix,
-            container_registry = container_registry,
-            processors = processors,
-            trump = trump,
+            aligned_screened_unique_seqs_fasta = screen_aligned_seqs.aligned_screened_unique_seqs_fasta,
+            count_table = unique_seqs.unique_seqs_count_table,
+            trump_character = trump_character,
             vertical = vertical,
-            count_table = unique_seqs.unique_seqs_count_table
-
+            processors = processors,
+            container_registry = container_registry
     }
 
     call pre_cluster {
-        input: 
+        input:
+            prefix = prefix,
             unique_filtered_screened_aligned_seqs_fasta = filter_screened_aligned_seqs.unique_filtered_screened_aligned_seqs_fasta,
             unique_filtered_screened_aligned_seqs_count_table = filter_screened_aligned_seqs.unique_filtered_screened_aligned_seqs_count_table,
-            sequence_differences = sequence_differences,
-            prefix = prefix,
-            container_registry = container_registry,
+            align_method = align_method,
             match = match,
             mismatch = mismatch,
             gap_open = gap_open,
             gap_extend = gap_extend,
-            align_method = align_method,
+            sequence_differences = sequence_differences,
             precluster_method = precluster_method,
-            processors = processors
+            processors = processors,
+            container_registry = container_registry
     }
 
     call chimera_vsearch {
         input:
             pre_cluster_fasta = pre_cluster.pre_cluster_fasta,
             count_table = pre_cluster.pre_cluster_count_table,
-            container_registry = container_registry,
+            remove_chimeras = remove_chimeras,
+            dereplicate_chimeras = dereplicate_chimeras,
             minh_chimeras = minh_chimeras,
             mindiv_chimeras = mindiv_chimeras,
             mindiffs_chimeras = mindiffs_chimeras,
             xn_chimeras = xn_chimeras,
             dn_chimeras = dn_chimeras,
-            dereplicate_chimeras = dereplicate_chimeras,
-            remove_chimeras = remove_chimeras,
-            processors = processors
-
+            container_registry = container_registry
     }
 
     call classify_seqs {
         input:
-            silva_v4_fasta = pcr_seqs.silva_v4_fasta,
-            silva_ref_tax = silva_ref_tax,
+            prefix = prefix,
             chimera_vsearch_fasta = chimera_vsearch.chimera_vsearch_fasta,
             count_table = chimera_vsearch.chimera_vsearch_count_table,
-            classify_method = classify_method, 
-            container_registry = container_registry,
+            silva_v4_fasta = pcr_seqs.silva_v4_fasta,
+            silva_ref_tax = silva_ref_tax,
+            ksize = ksize,
+            search_method = search_method,
+            classify_method = classify_method,
             classify_output_format = classify_output_format,
             classify_seqs_cutoff = classify_seqs_cutoff,
             bootstrap_probabilities = bootstrap_probabilities,
             relative_abundance = relative_abundance,
             classify_seqs_iters = classify_seqs_iters,
-            processors = processors,
             tax_level = tax_level,
-            ksize = ksize,
-            search_method = search_method,
-            prefix = prefix
+            container_registry = container_registry
     }
 
     call remove_lineage {
@@ -230,9 +223,9 @@ workflow mothur {
 
     call remove_singletons_and_doubletons {
         input:
+            prefix = prefix,
             fasta = remove_lineage.remove_lineage_fasta,
             count_table = remove_lineage.remove_lineage_count_table,
-            prefix = prefix,
             container_registry = container_registry
     }
 
@@ -240,15 +233,15 @@ workflow mothur {
         input:
             count_table = remove_singletons_and_doubletons.count_table_singletons_and_doubletons_removed,
             taxonomy = remove_lineage.remove_lineage_taxonomy,
-            container_registry = container_registry,
             classify_output_format = classify_output_format,
+            relative_abundance = relative_abundance,
             classify_cutoff = classify_cutoff,
             asv_classify_basis = asv_classify_basis,
             classify_printlevel = classify_printlevel,
             classify_probabilities = classify_probabilities,
             classify_persample = classify_persample,
             classify_threshold = classify_threshold,
-            relative_abundance = relative_abundance
+            container_registry = container_registry
     }
 
     call make_OTUs {
@@ -256,36 +249,35 @@ workflow mothur {
             fasta = remove_singletons_and_doubletons.fasta_singletons_and_doubletons_removed,
             count_table = remove_singletons_and_doubletons.count_table_singletons_and_doubletons_removed,
             taxonomy = remove_lineage.remove_lineage_taxonomy,
-            cluster_cutoff = cluster_cutoff,
-            container_registry = container_registry,
-            cluster_metric = cluster_metric,
-            cluster_initialize = cluster_initialize,
-            cluster_delta = cluster_delta,
-            cluster_iters = cluster_iters,   
-            dist_cutoff = dist_cutoff,
             classify_output_format = classify_output_format,
-            otu_cluster_method = otu_cluster_method,
+            relative_abundance = relative_abundance,
             classify_cutoff = classify_cutoff,
-            otu_classify_basis = otu_classify_basis,
             classify_printlevel = classify_printlevel,
             classify_probabilities = classify_probabilities,
             classify_persample = classify_persample,
             classify_threshold = classify_threshold,
-            relative_abundance = relative_abundance,
-            processors = processors,
+            cluster_cutoff = cluster_cutoff,
+            cluster_metric = cluster_metric,
+            cluster_initialize = cluster_initialize,
+            cluster_delta = cluster_delta,
+            cluster_iters = cluster_iters,
+            otu_cluster_method = otu_cluster_method,
+            otu_classify_basis = otu_classify_basis,
+            dist_cutoff = dist_cutoff,
+            dist_calc = dist_calc,
             count_ends = count_ends,
-            dist_calc = dist_calc
-
+            processors = processors,
+            container_registry = container_registry
     }
 
     output {
         # make_contigs
-        File make_contigs_scrap_fasta = make_contigs.make_contigs_scrap_fasta
         File make_contigs_fasta = make_contigs.make_contigs_fasta
+        File make_contigs_scrap_fasta = make_contigs.make_contigs_scrap_fasta
 
         # align_seqs_to_silva
         File align_summary = align_seqs_to_silva.align_summary
-        
+
         # classify_seqs
         File classify_seqs_taxonomy = classify_seqs.taxonomy
 
@@ -312,16 +304,14 @@ workflow mothur {
 
     parameter_meta {
         # Inputs
-        container_registry: {help: "Link to container registry where Docker image is located"}
         test_fastq_tar: {help: "Tarball of all paired end fastq files to analyzed"}
         silva_ref_fasta: {help: "Reference sequence database from SILVA"}
         silva_ref_tax: {help: "Reference taxonomy database from SILVA "}
         oligos: {help: "File with primers used in sequencing"}
-        file_type: {help: "File type is fastq"}
         prefix: {help: "Prefix for output files"}
         ref_fasta_start: {help: "Start position to trim reference fasta"}
         ref_fasta_end: {help: "End position to trim reference fasta"}
-        
+
         # Outputs
         make_contigs_fasta: {help:".fasta file with sequences from make_contigs_scrap_fasta removed during make_contigs task"}
         make_contigs_scrap_fasta: {help:"Sequences that were removed from raw reads in make_contigs task"}
@@ -333,32 +323,34 @@ workflow mothur {
         count_table_singletons_and_doubletons_removed:{help: "Final .count_table file to be used in subsequent ASV/OTU generation"}
         ASVs: {help: "Array of output files that correspond to ASV data to be used for downstream processing/analysis/visualization"}
         OTUs: {help: "Array of output files that correspond to OTU data to be used for downstream processing/analysis/visualization"}
-	}
+    }
 }
 
 task make_contigs {
     input {
-        File test_fastq_tar
-        String file_type
         String prefix
+        File test_fastq_tar
+        File oligos
+
         Int max_ambig
         Int max_homop
         Int max_length
-        String container_registry
-        String align_method
-        File oligos
         Int primer_differences
+        Boolean check_orient
+        String sequencing_format
+        Int quality_score_threshold
+
+        String align_method
         Int match
         Int mismatch
-        Int gap_extend
         Int gap_open
-        Int quality_score_threshold
-        String sequencing_format
-        Boolean check_orient
+        Int gap_extend
+
         Int processors
+        String container_registry
     }
 
-    Int disk_size_make_contigs = ceil ((size(test_fastq_tar, "GB")*20+50))
+    Int disk_size_make_contigs = ceil(size(test_fastq_tar, "GB") * 20 + 50)
 
     command <<<
         set -euo pipefail
@@ -371,7 +363,7 @@ task make_contigs {
         done
 
         mothur "#set.dir(output=output_makeContigs);
-        make.file(inputdir=fastq_files, type=~{file_type}, prefix=~{prefix});
+        make.file(inputdir=fastq_files, prefix=~{prefix});
         make.contigs(file=~{prefix}.files, processors=~{processors}, oligos=~{oligos}, maxambig=~{max_ambig}, pdiffs=~{primer_differences}, maxlength=~{max_length}, maxhomop=~{max_homop}, align=~{align_method}, checkorient=~{check_orient}, format=~{sequencing_format}, match=~{match}, mismatch=~{mismatch}, gapopen=~{gap_open}, gapextend=~{gap_extend}, insert=~{quality_score_threshold});
         summary.seqs()"
     >>>
@@ -386,7 +378,7 @@ task make_contigs {
 
     runtime {
         docker: "~{container_registry}/mothur:1.48.0"
-        cpu: 32
+        cpu: processors
         memory: "64 GB"
         disks: "local-disk " + disk_size_make_contigs + " HDD"
         preemptible: 3
@@ -395,13 +387,14 @@ task make_contigs {
 
 task unique_seqs {
     input {
+        String prefix
         File fasta
         File count_table
-        String prefix
+
         String container_registry
     }
-    
-    Int disk_size_unique_seqs = ceil ((size(fasta, "GB")*3+30))
+
+    Int disk_size_unique_seqs = ceil(size(fasta, "GB") * 3 + 30)
 
     command <<<
         set -euo pipefail
@@ -427,17 +420,19 @@ task unique_seqs {
 
 task pcr_seqs {
     input {
-        File silva_ref_fasta 
+        File silva_ref_fasta
         Int ref_fasta_start
         Int ref_fasta_end
-        String silva_ref_fasta_basename
-        String container_registry        
-        Boolean keepdots
-        Int processors
         File silva_ref_tax
+
+        Boolean keepdots
+
+        Int processors
+        String container_registry
     }
-    
-    Int disk_size_pcr_seqs = ceil ((size(silva_ref_fasta, "GB")*3+30))
+
+    String silva_ref_fasta_basename = basename(silva_ref_fasta, ".align")
+    Int disk_size_pcr_seqs = ceil(size(silva_ref_fasta, "GB") * 3 + 30)
 
     command <<<
         set -euo pipefail
@@ -453,7 +448,7 @@ task pcr_seqs {
 
     runtime {
         docker: "~{container_registry}/mothur:1.48.0"
-        cpu: 32
+        cpu: processors
         memory: "2 GB"
         disks: "local-disk " + disk_size_pcr_seqs + " HDD"
         preemptible: 3
@@ -461,24 +456,27 @@ task pcr_seqs {
 }
 
 task align_seqs_to_silva {
-    input { 
-        File silva_v4_fasta 
+    input {
+        String prefix
+
         File unique_seqs_fasta
-        String container_registry    
-        String prefix 
-        String search_method
+        File silva_v4_fasta
+
         String align_method
-        Int ksize
         Int match
         Int mismatch
         Int gap_open
+        Int gap_extend
+        Int ksize
+        String search_method
         Boolean flip
         Float threshold
-        Int gap_extend
+
         Int processors
+        String container_registry
     }
 
-    Int disk_size_align_seqs = ceil ((size(silva_v4_fasta, "GB")*3+30))
+    Int disk_size_align_seqs = ceil(size(silva_v4_fasta, "GB") * 3 + 30)
 
     command <<<
         set -euo pipefail
@@ -487,7 +485,7 @@ task align_seqs_to_silva {
         align.seqs(fasta=~{unique_seqs_fasta}, reference=~{silva_v4_fasta}, search=~{search_method}, align=~{align_method}, ksize=~{ksize}, match=~{match}, mismatch=~{mismatch}, gapopen=~{gap_open}, gapextend=~{gap_extend}, flip=~{flip}, threshold=~{threshold}, processors=~{processors});
         summary.seqs()"
     >>>
-    
+
     output {
         File aligned_unique_seqs_fasta = "output_align_seqs_to_silva/~{prefix}.trim.contigs.unique.align"
         File align_summary = "output_align_seqs_to_silva/~{prefix}.trim.contigs.unique.summary"
@@ -495,7 +493,7 @@ task align_seqs_to_silva {
 
     runtime {
         docker: "~{container_registry}/mothur:1.48.0"
-        cpu: 32
+        cpu: processors
         memory: "16 GB"
         disks: "local-disk " + disk_size_align_seqs + " HDD"
         preemptible: 3
@@ -504,20 +502,20 @@ task align_seqs_to_silva {
 
 task screen_aligned_seqs {
     input {
-        File aligned_unique_seqs_fasta
         String prefix
+        File aligned_unique_seqs_fasta
+
         String container_registry
     }
 
-    Int disk_size_screen_aligned_seqs = ceil ((size(aligned_unique_seqs_fasta, "GB")*3+30))
-    
+    Int disk_size_screen_aligned_seqs = ceil(size(aligned_unique_seqs_fasta, "GB") * 3 + 30)
+
     command <<<
         set -euo pipefail
 
         mothur "#set.dir(output=output_screen_aligned_seqs);
         screen.seqs(fasta=~{aligned_unique_seqs_fasta}, optimize=start-end-minlength-maxlength, criteria=90);
         summary.seqs()"
-        
     >>>
 
     output {
@@ -535,22 +533,24 @@ task screen_aligned_seqs {
 
 task filter_screened_aligned_seqs {
     input {
+        String prefix
         File aligned_screened_unique_seqs_fasta
         File count_table
-        String prefix
-        String container_registry 
-        Int processors
+
+        String trump_character
         Boolean vertical
-        String trump
+
+        Int processors
+        String container_registry
     }
 
-    Int disk_size_filter_screened_aligned_seqs = ceil ((size(aligned_screened_unique_seqs_fasta, "GB")*3+30))
+    Int disk_size_filter_screened_aligned_seqs = ceil(size(aligned_screened_unique_seqs_fasta, "GB") * 3 + 30)
 
     command <<<
         set -euo pipefail
 
         mothur "#set.dir(output=output_filter_screened_aligned_seqs);
-        filter.seqs(fasta=~{aligned_screened_unique_seqs_fasta}, vertical=~{vertical}, trump=~{trump}, processors=~{processors});
+        filter.seqs(fasta=~{aligned_screened_unique_seqs_fasta}, vertical=~{vertical}, trump=~{trump_character}, processors=~{processors});
         unique.seqs(count=~{count_table});
         summary.seqs()"
     >>>
@@ -562,7 +562,7 @@ task filter_screened_aligned_seqs {
 
     runtime {
         docker: "~{container_registry}/mothur:1.48.0"
-        cpu: 32
+        cpu: processors
         memory: "16 GB"
         disks: "local-disk " + disk_size_filter_screened_aligned_seqs + " HDD"
         preemptible: 3
@@ -571,21 +571,24 @@ task filter_screened_aligned_seqs {
 
 task pre_cluster {
     input {
+        String prefix
         File unique_filtered_screened_aligned_seqs_fasta
         File unique_filtered_screened_aligned_seqs_count_table
-        String prefix
-        Int sequence_differences
-        String container_registry 
+
         String align_method
         Int match
         Int mismatch
         Int gap_open
         Int gap_extend
+
+        Int sequence_differences
         String precluster_method
+
         Int processors
+        String container_registry
     }
 
-    Int disk_size_pre_cluster = ceil ((size(unique_filtered_screened_aligned_seqs_fasta, "GB")*3+30))
+    Int disk_size_pre_cluster = ceil(size(unique_filtered_screened_aligned_seqs_fasta, "GB") * 3 + 30)
 
     command <<<
         set -euo pipefail
@@ -601,7 +604,7 @@ task pre_cluster {
 
     runtime {
         docker: "~{container_registry}/mothur:1.48.0"
-        cpu: 32
+        cpu: processors
         memory: "16 GB"
         disks: "local-disk " + disk_size_pre_cluster + " HDD"
         preemptible: 3
@@ -612,18 +615,22 @@ task chimera_vsearch {
     input {
         File pre_cluster_fasta
         File count_table
-        String container_registry 
-        Boolean dereplicate_chimeras
+
         Boolean remove_chimeras
-        Int processors
+        Boolean dereplicate_chimeras
+
         Float minh_chimeras
         Float mindiv_chimeras
         Int mindiffs_chimeras
+
         Float xn_chimeras
         Float dn_chimeras
+
+        String container_registry
     }
 
-    Int disk_size_chimera_vsearch = ceil ((size(pre_cluster_fasta, "GB")*3+30))
+    Int processors = 16
+    Int disk_size_chimera_vsearch = ceil(size(pre_cluster_fasta, "GB") * 3 + 30)
 
     command <<<
         set -euo pipefail
@@ -645,7 +652,7 @@ task chimera_vsearch {
 
     runtime {
         docker: "~{container_registry}/mothur:1.48.0"
-        cpu: 16
+        cpu: processors
         memory: "8 GB"
         disks: "local-disk " + disk_size_chimera_vsearch + " HDD"
         preemptible: 3
@@ -654,29 +661,33 @@ task chimera_vsearch {
 
 task classify_seqs {
     input {
+        String prefix
         File chimera_vsearch_fasta
         File count_table
+
         File silva_v4_fasta
         File silva_ref_tax
-        String classify_method
-        String container_registry
-        Int processors
+
         Int ksize
         String search_method
-        Int tax_level
+
+        String classify_method
         String classify_output_format
         Int classify_seqs_cutoff
         Boolean bootstrap_probabilities
         Boolean relative_abundance
         Int classify_seqs_iters
-        String prefix
+        Int tax_level
+
+        String container_registry
     }
 
-    Int disk_classify_seqs = ceil ((size(chimera_vsearch_fasta, "GB") + size (silva_v4_fasta, "GB") + size (silva_ref_tax, "GB"))*3+30)
+    Int processors = 16
+    Int disk_classify_seqs = ceil(size(chimera_vsearch_fasta, "GB") + size(silva_v4_fasta, "GB") + size(silva_ref_tax, "GB") * 3 + 30)
 
     command <<<
         set -euo pipefail
-        
+
         mothur "#set.dir(output=output_classify_seqs);
         classify.seqs(fasta=~{chimera_vsearch_fasta}, count=~{count_table}, reference=~{silva_v4_fasta}, taxonomy=~{silva_ref_tax}, method=~{classify_method}, cutoff=~{classify_seqs_cutoff}, probs=~{bootstrap_probabilities}, processors=~{processors}, output=~{classify_output_format}, printlevel=~{tax_level}, iters=~{classify_seqs_iters}, search=~{search_method}, ksize=~{ksize}, relabund=~{relative_abundance});
         rename.file(taxonomy=current, prefix=~{prefix})"
@@ -688,7 +699,7 @@ task classify_seqs {
 
     runtime {
         docker: "~{container_registry}/mothur:1.48.0"
-        cpu: 16
+        cpu: processors
         memory: "8 GB"
         disks: "local-disk " + disk_classify_seqs + " HDD"
         preemptible: 3
@@ -699,12 +710,14 @@ task remove_lineage {
     input {
         File chimera_vsearch_fasta
         File count_table
+
         File taxonomy
         String taxon_remove
-        String container_registry 
+
+        String container_registry
     }
 
-    Int disk_size_remove_lineage = ceil ((size(chimera_vsearch_fasta, "GB")+ size (taxonomy, "GB"))*3+30)
+    Int disk_size_remove_lineage = ceil(size(chimera_vsearch_fasta, "GB")+ size(taxonomy, "GB") * 3 + 30)
 
     command <<<
         set -euo pipefail
@@ -737,15 +750,16 @@ task remove_lineage {
 
 task remove_singletons_and_doubletons {
     input {
+        String prefix
         File fasta
         File count_table
-        String prefix
+
         String container_registry
     }
-    
+
     command <<<
         set -euo pipefail
-        
+
         awk -F'\t' 'NR > 2 && $2 == 1 { print $1 }' ~{count_table} > ~{prefix}_singles.accnos
         awk -F'\t' 'NR > 2 && $2 == 2 { print $1 }' ~{count_table} > ~{prefix}_doubles.accnos
         cat ~{prefix}_doubles.accnos ~{prefix}_singles.accnos > ~{prefix}_combined.accnos
@@ -768,7 +782,7 @@ task remove_singletons_and_doubletons {
     runtime {
         docker: "~{container_registry}/mothur:1.48.0"
         cpu: 4
-        memory: "8 GB" 
+        memory: "8 GB"
         disks: "local-disk 250 HDD"
         preemptible: 3
     }
@@ -777,16 +791,20 @@ task remove_singletons_and_doubletons {
 task make_ASVs {
     input {
         File count_table
-        File taxonomy 
-        String container_registry 
+
+        File taxonomy
+
+        String classify_output_format
         Boolean relative_abundance
+
         Int classify_cutoff
         String asv_classify_basis
-        String classify_output_format
         Int classify_printlevel
         Boolean classify_probabilities
         Boolean classify_persample
         Int classify_threshold
+
+        String container_registry
     }
 
     command <<<
@@ -797,7 +815,7 @@ task make_ASVs {
         make.shared(count=~{count_table});
         classify.otu(list=current, count=~{count_table}, taxonomy=~{taxonomy}, label=ASV, cutoff=~{classify_cutoff}, basis=~{asv_classify_basis}, relabund=~{relative_abundance}, output=~{classify_output_format}, printlevel=~{classify_printlevel}, probs=~{classify_probabilities}, persample=~{classify_persample}, threshold=~{classify_threshold})"
     >>>
-    
+
     output {
         Array[File] ASVs = glob("output_ASVs/*")
     }
@@ -805,7 +823,7 @@ task make_ASVs {
     runtime {
         docker: "~{container_registry}/mothur:1.48.0"
         cpu: 16
-        memory: "16 GB" 
+        memory: "16 GB"
         disks: "local-disk 250 HDD"
         preemptible: 3
     }
@@ -815,26 +833,31 @@ task make_OTUs {
     input {
         File fasta
         File count_table
-        File taxonomy 
-        Float cluster_cutoff
-        String container_registry 
-        String otu_cluster_method
-        String cluster_metric
-        String cluster_initialize
-        Float cluster_delta
-        Int cluster_iters
-        Boolean relative_abundance
-        Int classify_cutoff
-        String otu_classify_basis
+
+        File taxonomy
+
         String classify_output_format
+        Boolean relative_abundance
+
+        Int classify_cutoff
         Int classify_printlevel
         Boolean classify_probabilities
         Boolean classify_persample
         Int classify_threshold
+
+        Float cluster_cutoff
+        String cluster_metric
+        String cluster_initialize
+        Float cluster_delta
+        Int cluster_iters
+        String otu_cluster_method
+        String otu_classify_basis
         Float dist_cutoff
-        Int processors
-        Boolean count_ends
         String dist_calc
+        Boolean count_ends
+
+        Int processors
+        String container_registry
     }
 
     command <<<
@@ -847,14 +870,14 @@ task make_OTUs {
         make.shared(list=current, count=~{count_table}, label=~{dist_cutoff});
         classify.otu(list=current, count=~{count_table}, taxonomy=~{taxonomy}, label=~{dist_cutoff}, cutoff=~{classify_cutoff}, basis=~{otu_classify_basis}, relabund=~{relative_abundance}, output=~{classify_output_format}, printlevel=~{classify_printlevel}, probs=~{classify_probabilities}, persample=~{classify_persample}, threshold=~{classify_threshold})"
     >>>
-    
+
     output {
         Array[File] OTUs = glob("output_OTUs_dist/*")
     }
 
     runtime {
         docker: "~{container_registry}/mothur:1.48.0"
-        cpu: 32
+        cpu: processors
         memory: "32 GB"
         disks: "local-disk 500 HDD"
         preemptible: 3
