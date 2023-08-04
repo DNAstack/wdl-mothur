@@ -6,7 +6,6 @@ workflow mothur {
         File silva_ref_fasta
         File silva_ref_tax
         File oligos
-        String file_type
         String prefix
 
         # make_contigs
@@ -92,7 +91,6 @@ workflow mothur {
         input:
             prefix = prefix,
             test_fastq_tar = test_fastq_tar,
-            file_type = file_type,
             oligos = oligos,
             max_ambig = max_ambig,
             max_homop = max_homop,
@@ -310,7 +308,6 @@ workflow mothur {
         silva_ref_fasta: {help: "Reference sequence database from SILVA"}
         silva_ref_tax: {help: "Reference taxonomy database from SILVA "}
         oligos: {help: "File with primers used in sequencing"}
-        file_type: {help: "File type is fastq"}
         prefix: {help: "Prefix for output files"}
         ref_fasta_start: {help: "Start position to trim reference fasta"}
         ref_fasta_end: {help: "End position to trim reference fasta"}
@@ -333,8 +330,6 @@ task make_contigs {
     input {
         String prefix
         File test_fastq_tar
-        String file_type
-
         File oligos
 
         Int max_ambig
@@ -368,7 +363,7 @@ task make_contigs {
         done
 
         mothur "#set.dir(output=output_makeContigs);
-        make.file(inputdir=fastq_files, type=~{file_type}, prefix=~{prefix});
+        make.file(inputdir=fastq_files, prefix=~{prefix});
         make.contigs(file=~{prefix}.files, processors=~{processors}, oligos=~{oligos}, maxambig=~{max_ambig}, pdiffs=~{primer_differences}, maxlength=~{max_length}, maxhomop=~{max_homop}, align=~{align_method}, checkorient=~{check_orient}, format=~{sequencing_format}, match=~{match}, mismatch=~{mismatch}, gapopen=~{gap_open}, gapextend=~{gap_extend}, insert=~{quality_score_threshold});
         summary.seqs()"
     >>>
