@@ -51,7 +51,7 @@ The `PD_fastqs.tar` file was used as the `fastq_tar` input to the workflow.
 
 ### `silva_ref_fasta`, `silva_ref_tax`
 
-The SILVA ref fasta and tax files were retrieved as described in the [SILVA reference datasets](../../README.md#silva-reference-datasets) section.
+The SILVA ref fasta and tax files were retrieved as described in the [required inputs](../../README.md#required-inputs) section
 
 ### `oligos`
 
