@@ -16,7 +16,7 @@ The `fastq_tar` contains unzipped paired-end reads from all runs associated with
 
 1. Obtain sample metadata from the NCBI
 
-To obtain sample run metadata, [these instructions](https://www.ncbi.nlm.nih.gov/sra/docs/sradownload/#download-metadata-associated-wit) were followed using [this BioProject](https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=601994). Biosample metadata was retrieved by selecting Full(text) from the dropbown menu, from [this link](https://www.ncbi.nlm.nih.gov/biosample?LinkName=bioproject_biosample&from_uid=601994).
+To obtain sample run metadata, [these instructions](https://www.ncbi.nlm.nih.gov/sra/docs/sradownload/#download-metadata-associated-wit) were followed using [this BioProject](https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=601994). Biosample metadata was retrieved by selecting Full(text) from the dropdown menu, from [this link](https://www.ncbi.nlm.nih.gov/biosample?LinkName=bioproject_biosample&from_uid=601994).
 
 The [biosample_result.txt](biosample_result.txt) file found in this directory was retrieved using this method.
 
