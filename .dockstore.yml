@@ -1,10 +1,10 @@
 version: 1.2
 
 workflows:
-  - subclass: WDL
+  - name: wdl-mothur
+    subclass: WDL
     primaryDescriptorPath: /mothur.wdl
-    testParameterFiles:
-      - /input_template.json
+    readMePath: /README.md
     authors:
       - name: Jesse Wolf
         email: jesse@dnastack.com
